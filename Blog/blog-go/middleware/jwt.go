@@ -56,9 +56,6 @@ func ParseToken(tokenString string) (*CustomClaims, error) {
 
 // 刷新 Token
 func RefreshToken(tokenString string) (string, error) {
-	jwt.TimeFunc = func() time.Time {
-		return time.Unix(0, 0)
-	}
 
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return MySecret, nil
@@ -79,6 +76,7 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 		// 这里假设Token放在Header的Authorization中，并使用Bearer开头
 		// 这里的具体实现方式要依据你的实际业务情况决定
 		authHeader := c.Request.Header.Get("Authorization")
+
 		if authHeader == "" {
 			c.JSON(http.StatusOK, gin.H{
 				"code": 2003,
@@ -108,6 +106,16 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 			return
 		}
 		// 将当前请求的username信息保存到请求的上下文c上
+		token2, err2 := RefreshToken(parts[1])
+		if err2 != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"code": 2005,
+				"msg":  "刷新token失败",
+			})
+			c.Abort()
+			return
+		}
+		c.Set("token", token2)
 		c.Set("user", mc.User)
 		c.Next() // 后续的处理函数可以用过c.Get("User")来获取当前请求的用户信息
 	}
