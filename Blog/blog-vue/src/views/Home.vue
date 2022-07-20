@@ -34,11 +34,14 @@
 
     // 跳转到传递参数页
     goChange(row) {
-      console.log(row)
+      this.global.hid = false
+      this.global.rid=row.recordid
+      console.log(this.global.rid)
       this.$router.push({
         path: '/article',
         query: {
           blog:row,
+          hid:false,
         }// 要传递的参数
       })
         }

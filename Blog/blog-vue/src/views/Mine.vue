@@ -5,7 +5,7 @@
             <el-row type="flex" justify="center" >
               <el-col >
                 <div class="blog-box" v-for="blog in blogs"  style="background-color: rgb(220, 235, 245);width: 800px;margin-left: auto;margin-right: auto;border-radius: 12px;" >
-                  <h1 style="text-align:center" @click="goChange(blog)"><router-link :to="'/article?id='+blog.recordid">{{blog.recordtitle}}</router-link></h1>
+                  <h1 style="text-align:center" @click="goChange(blog)"><router-link :to="'/article'">{{blog.recordtitle}}</router-link></h1>
                   <span style="margin-left:20px;display :inline-block;width:90%;overflow:hidden;text-Overflow:ellipsis;white-Space:nowrap;">
                     {{blog.recordcontent}}
                   </span>
@@ -34,11 +34,14 @@
 
 // 跳转到传递参数页
 goChange(row) {
+  this.global.hid = true
+  this.global.rid=row.recordid
+  console.log(this.global.rid)
   this.$router.push({
     path: '/article',
     query: {
       blog:row,
-      hid:false,
+      hid:true,
     }// 要传递的参数
   })
     }

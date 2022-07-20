@@ -5,8 +5,8 @@
         <el-row style=" width: 80%;margin-left: auto;margin-right: auto;">{{this.blog.recordcontent}}</el-row>
         <el-row style="margin-left:1600px;">作者:{{this.blog.recordusername}}</el-row>
         <el-row style="margin-left:1600px;">{{this.blog.createtime.slice(0,10)}}</el-row>
-        <el-row v-if="this.buttonhid" style="margin-left:1600px;">
-            <el-button
+        <el-row v-if="this.global.hid" style="margin-left:1600px;">
+            <el-button 
             size="mini"
             @click="handleEdit()">编辑</el-button>
           <el-button
@@ -28,10 +28,12 @@ export default {
             dialogEdit: {
                 show: false,
             },
+            rid:3,
         };
     },
-    created() {
-    },
+    created:function() {//创建完成
+
+  },
     watch: {
     '$route': 'gettingData'
   },
@@ -47,7 +49,32 @@ export default {
       localStorage.setItem("content",queryCardNoFirst.recordcontent)
       this.blog = queryCardNoFirst
       this.form = queryCardNoFirst
-      this.buttonhid=his
+      this.buttonhid=this.$route.query.hid
+           
+      this.axios({
+            method: "POST",
+            url: this.global.apiUrl+'/getone',
+            headers:{
+                'Authorization': "Bearer " + localStorage.getItem('token'),
+              },
+            data:{
+                recordid:this.global.rid,
+            }
+        }).then(res => {
+            console.log(res)
+            if(res.data.code==2003||res.data.code==2004||res.data.code==2005){
+                    alert('请先完成登录!');
+                    this.$router.push('/')
+                }else{
+                  localStorage.setItem("token",res.data.token)
+                this.blog=res.data.record;
+                }
+
+        }).catch(err => {
+
+        })
+
+        
     },
         handleEdit() {
             this.dialogEdit.show = true;

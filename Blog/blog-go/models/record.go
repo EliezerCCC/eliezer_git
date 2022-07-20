@@ -43,3 +43,9 @@ func UpdataRecord(record Record) (err error) {
 	err = mysql.DB.Where("Id = ?", record.RecordId).Save(&record).Error
 	return
 }
+
+// GetOne 获取一条博客信息
+func GetOne(recordid int) (record *Record, err error) {
+	err = mysql.DB.Where("Id = ?", recordid).First(&record).Error
+	return
+}

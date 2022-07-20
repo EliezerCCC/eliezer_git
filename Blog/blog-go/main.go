@@ -2,6 +2,7 @@ package main
 
 import (
 	"blog-go/dao/mysql"
+	"blog-go/dao/redisd"
 	"blog-go/routers"
 )
 
@@ -11,7 +12,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
+	err = redisd.SetupRedisDb()
+	if err != nil {
+		panic(err)
+	}
 	r := routers.SetupRouter()
 
 	//启动http服务

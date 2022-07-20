@@ -24,6 +24,8 @@ func SetupRouter() *gin.Engine {
 	r.POST("/add", middleware.JWTAuthMiddleware(), controller.Add)
 	//获取所有博客
 	r.GET("/all", controller.AllRecord)
+	//获取某条博客信息
+	r.POST("/getone", middleware.JWTAuthMiddleware(), controller.GetOne)
 	//获取某个用户所有博客
 	r.GET("/oneall", middleware.JWTAuthMiddleware(), controller.OneAllRecord)
 	//编辑博客

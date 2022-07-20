@@ -2,6 +2,7 @@ package controller
 
 import (
 	"blog-go/models"
+	"blog-go/service"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"time"
@@ -106,4 +107,28 @@ func UpdataRecord(c *gin.Context) {
 		})
 	}
 
+}
+
+// GetOne 获取一条博客信息
+
+func GetOne(c *gin.Context) {
+	var record models.Record
+	c.ShouldBind(&record)
+	token := c.MustGet("token")
+	fmt.Println("单条博客：", record.RecordId)
+
+	record1, err := service.GetOneRecord(uint64(record.RecordId))
+
+	if err != nil {
+		c.JSON(200, gin.H{"error": err.Error()})
+		fmt.Println("获取失败！")
+	} else {
+		fmt.Println(record1)
+		fmt.Println("获取成功！")
+		c.JSON(200, gin.H{
+			"result": "获取成功！",
+			"record": record1,
+			"token":  token,
+		})
+	}
 }
